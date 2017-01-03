@@ -1,11 +1,17 @@
 package com.chequer.ax5.api.demo.entity.file;
 
+import com.chequer.ax5.api.demo.entity.Types;
 import com.chequer.ax5.api.demo.utils.JsonUtils;
+import net.coobird.thumbnailator.Thumbnails;
+import net.coobird.thumbnailator.geometry.Positions;
+import net.coobird.thumbnailator.name.Rename;
 import org.apache.commons.io.FileUtils;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
 
+import javax.servlet.http.HttpServletResponse;
 import java.io.File;
 import java.io.IOException;
 import java.util.Collections;
@@ -23,11 +29,25 @@ public class FilePersistService implements InitializingBean {
     public void persist(AX5File ax5File) throws IOException {
         clean();
 
+        File file = new File(path + File.separator + ax5File.getSaveName());
+
         // 파일 로컬시스템에 저장
-        ax5File.getMultipartFile().transferTo(new File(path + File.separator + ax5File.getSaveName()));
+        ax5File.getMultipartFile().transferTo(file);
 
         // JSON 정보 저장
         FileUtils.writeStringToFile(new File(path + File.separator + ax5File.getJsonName()), JsonUtils.toJson(ax5File), "UTF-8");
+
+        String fileType = getFileType(ax5File.getExt());
+
+        if (fileType.equals(Types.FileType.IMAGE)) {
+            try {
+                Thumbnails.of(file)
+                        .crop(Positions.CENTER)
+                        .size(320, 320)
+                        .toFiles(new File(path), Rename.SUFFIX_HYPHEN_THUMBNAIL);
+            } catch (Exception e) {
+            }
+        }
     }
 
     int maxSaveFileCount = 20;
@@ -81,5 +101,70 @@ public class FilePersistService implements InitializingBean {
         ax5File = getAx5File(ax5File.getId());
         FileUtils.deleteQuietly(new File(path + File.separator + ax5File.getSaveName()));
         FileUtils.deleteQuietly(new File(path + File.separator + ax5File.getJsonName()));
+    }
+
+    public void preview(HttpServletResponse response, String id, String type) throws IOException {
+        AX5File ax5File = getAx5File(id);
+
+        if (ax5File == null)
+            return;
+
+        MediaType mediaType = null;
+        String imagePath = "";
+
+        switch (ax5File.getExt().toUpperCase()) {
+            case Types.FileExtensions.JPEG:
+            case Types.FileExtensions.JPG:
+                mediaType = MediaType.IMAGE_JPEG;
+                break;
+
+            case Types.FileExtensions.PNG:
+                mediaType = MediaType.IMAGE_PNG;
+                break;
+
+            case Types.FileExtensions.GIF:
+                mediaType = MediaType.IMAGE_GIF;
+                break;
+
+            default:
+        }
+
+        switch (type) {
+            case Types.ImagePreviewType.ORIGIN:
+                imagePath = ax5File.getSaveName();
+                break;
+
+            case Types.ImagePreviewType.THUMBNAIL:
+                imagePath = ax5File.getThumbnailSaveName();
+                break;
+        }
+
+        if (mediaType != null) {
+            File file = new File(path + File.separator + imagePath);
+            byte[] bytes = FileUtils.readFileToByteArray(file);
+
+            response.setContentType(mediaType.toString());
+            response.setContentLength(bytes.length);
+            response.getOutputStream().write(bytes);
+        }
+    }
+
+    private String getFileType(String extension) {
+        switch (extension.toUpperCase()) {
+            case Types.FileExtensions.PNG:
+            case Types.FileExtensions.JPG:
+            case Types.FileExtensions.JPEG:
+            case Types.FileExtensions.GIF:
+            case Types.FileExtensions.BMP:
+            case Types.FileExtensions.TIFF:
+            case Types.FileExtensions.TIF:
+                return Types.FileType.IMAGE;
+
+            case Types.FileExtensions.PDF:
+                return Types.FileType.PDF;
+
+            default:
+                return Types.FileType.ETC;
+        }
     }
 }

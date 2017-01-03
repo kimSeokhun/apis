@@ -1,5 +1,6 @@
 package com.chequer.ax5.api.demo.entity.file;
 
+import com.chequer.ax5.api.demo.entity.Types;
 import com.chequer.ax5.api.demo.utils.AgentUtils;
 import eu.bitwalker.useragentutils.Browser;
 import org.apache.commons.io.FileUtils;
@@ -12,6 +13,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.net.URLEncoder;
 import java.util.List;
@@ -90,5 +92,14 @@ public class FileUploadService {
         }
 
         return fileName;
+    }
+
+
+    public void preview(HttpServletResponse response, String id) throws IOException {
+        filePersistService.preview(response, id, Types.ImagePreviewType.ORIGIN);
+    }
+
+    public void thumbnail(HttpServletResponse response, String id) throws IOException {
+        filePersistService.preview(response, id, Types.ImagePreviewType.THUMBNAIL);
     }
 }

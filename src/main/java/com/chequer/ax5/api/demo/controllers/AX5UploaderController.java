@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.List;
 
@@ -34,6 +35,16 @@ public class AX5UploaderController extends BaseController {
     @ResponseBody
     public ResponseEntity<byte[]> download(HttpServletRequest request, @RequestParam String id) throws IOException {
         return fileUploadService.download(request, id);
+    }
+
+    @RequestMapping(value = "/preview", method = RequestMethod.GET)
+    public void preview(HttpServletResponse response, @RequestParam String id) throws IOException {
+        fileUploadService.preview(response, id);
+    }
+
+    @RequestMapping(value = "/thumbnail", method = RequestMethod.GET)
+    public void thumbnail(HttpServletResponse response, @RequestParam String id) throws IOException {
+        fileUploadService.thumbnail(response, id);
     }
 
     @GetMapping

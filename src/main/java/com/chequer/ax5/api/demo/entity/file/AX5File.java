@@ -1,6 +1,7 @@
 package com.chequer.ax5.api.demo.entity.file;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
 import org.apache.commons.io.FilenameUtils;
 import org.springframework.web.multipart.MultipartFile;
@@ -47,6 +48,10 @@ public class AX5File implements Comparable {
         return String.format("%s.%s", id, ext);
     }
 
+    public String getThumbnailSaveName() {
+        return String.format("%s-thumbnail.%s", id, ext);
+    }
+
     public String getJsonName() {
         return String.format("%s.json", id, ext);
     }
@@ -63,5 +68,20 @@ public class AX5File implements Comparable {
         } else {
             return 0;
         }
+    }
+
+    @JsonProperty("preview")
+    public String preview() {
+        return "/api/v1/ax5uploader/preview?id=" + getId();
+    }
+
+    @JsonProperty("thumbnail")
+    public String thumbnail() {
+        return "/api/v1/ax5uploader/thumbnail?id=" + getId();
+    }
+
+    @JsonProperty("download")
+    public String download() {
+        return "/api/v1/ax5uploader/download?id=" + getId();
     }
 }
