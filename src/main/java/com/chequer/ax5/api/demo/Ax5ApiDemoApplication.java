@@ -5,7 +5,6 @@ import com.mangofactory.swagger.models.dto.ApiInfo;
 import com.mangofactory.swagger.plugin.EnableSwagger;
 import com.mangofactory.swagger.plugin.SwaggerSpringMvcPlugin;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.PropertySource;
@@ -14,10 +13,6 @@ import org.springframework.context.annotation.PropertySource;
 @EnableSwagger
 @PropertySource(value = {"classpath:application-${spring.profiles.active:local}.properties"})
 public class Ax5ApiDemoApplication {
-    public static void main(String[] args) {
-        SpringApplication.run(Ax5ApiDemoApplication.class, args);
-    }
-
     @Autowired
     private SpringSwaggerConfig springSwaggerConfig;
 
