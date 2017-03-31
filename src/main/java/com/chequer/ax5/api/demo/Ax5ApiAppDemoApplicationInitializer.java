@@ -26,7 +26,7 @@ public class Ax5ApiAppDemoApplicationInitializer extends SpringBootServletInitia
     @Bean
     ServletRegistrationBean h2servletRegistration(){
         ServletRegistrationBean registrationBean = new ServletRegistrationBean(new WebServlet());
-        registrationBean.addUrlMappings("/console/*");
+        registrationBean.addUrlMappings("/ax5-h2-console/*");
         return registrationBean;
     }
 }
