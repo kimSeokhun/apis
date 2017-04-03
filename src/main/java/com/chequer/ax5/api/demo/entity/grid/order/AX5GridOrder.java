@@ -17,11 +17,11 @@ public class AX5GridOrder implements Serializable {
     @Column(name = "ID", nullable = false)
     Long id;
 
-    @Column(name = "FIELD")
-    String field;
+    @Column(name = "A")
+    String a;
 
-    @Column(name = "MODEL")
-    String model;
+    @Column(name = "B")
+    String b;
 
     @Column(name = "PRICE")
     int price;

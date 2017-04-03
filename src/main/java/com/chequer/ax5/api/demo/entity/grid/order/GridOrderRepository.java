@@ -1,7 +1,8 @@
 package com.chequer.ax5.api.demo.entity.grid.order;
 
-/**
- * Created by imt on 2017. 4. 3..
- */
-public class GridOrderRepository {
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
+
+@Repository
+public interface GridOrderRepository extends JpaRepository<AX5GridOrder, Long> {
 }
