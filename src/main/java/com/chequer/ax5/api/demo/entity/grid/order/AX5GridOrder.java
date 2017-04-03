@@ -1,4 +1,4 @@
-package com.chequer.ax5.api.demo.entity.sample;
+package com.chequer.ax5.api.demo.entity.grid.order;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -10,10 +10,10 @@ import java.util.Date;
 @Getter
 @Setter
 @Entity
-@Table(name = "SAMPLE_L")
-public class Sample implements Serializable {
+@Table(name = "GRID_ORDER_L")
+public class AX5GridOrder implements Serializable {
     @Id
-    @GeneratedValue(strategy=GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "ID", nullable = false)
     Long id;
 
